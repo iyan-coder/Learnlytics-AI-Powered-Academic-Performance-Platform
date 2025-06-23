@@ -55,3 +55,9 @@ poetry run flake8 .
 
 echo Done
 pause
+
+### how to get Structure
+```bash 
+tree /f > structure.txt
+notepad structure.txt
+```
