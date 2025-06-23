@@ -1,0 +1,33 @@
+[project]
+name = "student_performance_indicator"
+version = "0.1.0"
+description = "An end-to-end ML project that predicts student performance and includes validation, training, and deployment using Flask and Streamlit."
+authors = [
+    {name = "iyancoder",email = "iyanuoluwaadebayo04@gmail.com"}
+]
+packages = [{ include = "student_performance_indicator", from = "src" }]
+
+readme = "README.md"
+requires-python = ">=3.10,<3.12"
+dependencies = [
+    "xgboost (==1.6.2)",
+    "pandas (==1.5)",
+    "scikit-learn (==1.2)",
+    "fastapi (==0.95)",
+    "uvicorn (==0.22)",
+    "streamlit (==1.25)",
+    "numpy (==1.23)",
+    "python-dotenv (==1.0)",
+    "dvc (>=3.60.1,<4.0.0)"
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.group.dev.dependencies]
+black = "^25.1.0"
+isort = "^6.0.1"
+flake8 = "^7.3.0"
+
