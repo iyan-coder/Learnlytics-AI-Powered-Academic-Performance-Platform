@@ -24,11 +24,13 @@ import pandas as pd  # For working with tabular data
 # Import pipeline components
 from student_performance_indicator.constant import training_pipeline
 from student_performance_indicator.components.data_ingestion import DataIngestion
+from student_performance_indicator.components.data_validation import DataValidation
 
 # Import configuration entities
 from student_performance_indicator.entity.config_entity import(
     TrainingPipelineConfig,
-    DataIngestionConfig
+    DataIngestionConfig,
+    DataValidationConfig
 )
 # Custom error and logging handling
 from student_performance_indicator.exception.exception import StudentPerformanceException # Custom exception for standardized error handling
@@ -54,8 +56,22 @@ if __name__ == "__main__":
         data_ingestion_artifact = data_ingestion.initiate_data_ingestion()
         logger.info("Data ingestion completed.")
         print(data_ingestion_artifact)  # Show what files/paths were created
+
+        
+        # ====================
+        # Step 3: Data Validation
+        # ====================
+        logger.info("Starting data validation...")
+        # Create and run the data validation process
+        data_validation_config = DataValidationConfig(training_pipeline_config)
+        data_validation = DataValidation(data_ingestion_artifact, data_validation_config)
+        data_validation_artifact = data_validation.initiate_data_validation()
+        logger.info("Data validation completed.")
+        print(data_validation_artifact)
+
         
     except Exception as e:
         # Catch and log any error that happens during the pipeline
         logger.error("Pipeline execution failed.", exc_info=True)
         raise StudentPerformanceException(e,sys)
+    

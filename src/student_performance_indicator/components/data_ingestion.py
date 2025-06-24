@@ -10,7 +10,8 @@ import pandas as pd  # DataFrame for data manipulation
 import numpy as np  # For handling missing values
 import pymongo  # MongoDB connector
 from sklearn.model_selection import train_test_split  # Train-test splitting
-
+from student_performance_indicator.utils.main_utils.utils import generate_schema_from_csv
+from student_performance_indicator.constant.training_pipeline import SCHEMA_FILE_PATH
 from dotenv import load_dotenv  # Load environment variables from .env file
 load_dotenv()  # Load .env file into environment variables
 
@@ -134,6 +135,10 @@ class DataIngestion:
                 raise ValueError("Exported dataframe is None or empty.")
 
             dataframe = self.export_data_into_feature_store(dataframe)  # Step 2: Save raw data
+
+            generate_schema_from_csv(self.data_ingestion_config.feature_store_file_path)
+            logger.info(f"Schema.yaml is saved to {SCHEMA_FILE_PATH}")
+
             self.split_data_as_train_test(dataframe)  # Step 3: Split and save
 
             data_ingestion_artifact = DataIngetionArtifact(

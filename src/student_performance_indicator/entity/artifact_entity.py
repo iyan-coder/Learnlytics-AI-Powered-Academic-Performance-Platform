@@ -18,3 +18,28 @@ class DataIngetionArtifact:
     """
     trained_file_path: str  # File path to the training dataset after split
     test_file_path: str     # File path to the testing dataset after split
+
+# ===================================================================
+# DataValidationArtifact: Holds output of the data validation process
+# ===================================================================
+@dataclass
+class DataValidationArtifact:
+    """
+    Artifact class for the data validation step.
+
+    Attributes:
+        validation_status (bool): Indicates if the validation was successful (True/False).
+        valid_train_file_path (str): Path to the validated training dataset.
+        valid_test_file_path (str): Path to the validated testing dataset.
+        invalid_train_file_path (str): Path to the invalid training dataset, if any.
+        invalid_test_file_path (str): Path to the invalid testing dataset, if any.
+        drift_report_file_path (str): Path to the saved data drift report (YAML).
+    """
+    validation_status: bool               #  Was validation successful or not
+    valid_train_file_path: str            #  Path to valid training data
+    valid_test_file_path: str             #  Path to valid testing data
+    invalid_train_file_path: str          #  Path to invalid training data (if validation fails)
+    invalid_test_file_path: str           #  Path to invalid testing data (if validation fails)
+    drift_report_file_path: str           #  Path to YAML file storing the drift detection report
+
+
