@@ -32,6 +32,8 @@ TEST_FILE_NAME: str = "test.csv"
 
 SCHEMA_FILE_PATH: str = "data_schema/schema.yaml"
 
+TARGET_COLUMN: str = "math_score"
+
 # ============================================
 # Data Ingestion Related Constants
 # ============================================
@@ -73,6 +75,24 @@ DATA_VALIDATION_DRIFT_REPORT_DIR: str = "drift_report"
 
 # File name of the generated data drift report (YAML format)
 DATA_VALIDATION_DRIFT_REPORT_FILE_NAME: str = "report.yaml"
+
+
+
+# ============================
+# Data Transformation Imputer
+# ============================
+
+# Directory name for storing all data transformation-related artifacts
+DATA_TRANSFORMATION_DIR_NAME: str = "data_transformation"
+
+# Subdirectory to store transformed data (typically after preprocessing)
+DATA_TRANSFORMATION_TRANSFORMATED_DATA_DIR: str = "transformed"
+
+# Subdirectory to store serialized transformation objects like scalers or imputers
+DATA_TRANSFORMATION_TRANSFORMATED_OBJECT_DIR: str = "transformed_object"
+
+PREPROCESSING_OBJECT_FILE_NAME:str = "preprocessor"
+
 
 
 

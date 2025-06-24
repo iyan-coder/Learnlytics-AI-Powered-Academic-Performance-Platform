@@ -42,4 +42,30 @@ class DataValidationArtifact:
     invalid_test_file_path: str           #  Path to invalid testing data (if validation fails)
     drift_report_file_path: str           #  Path to YAML file storing the drift detection report
 
+@dataclass
+class DataTransformationArtifact:
+
+    """
+Data class for storing artifact paths generated during the data transformation step
+of a machine learning pipeline.
+
+Attributes:
+    transformed_object_file_path (str): Path to the serialized preprocessing object
+                                        (e.g., imputer, scaler, encoder).
+    transformed_train_file_path (str): Path to the preprocessed and transformed training dataset.
+    transformed_test_file_path (str): Path to the preprocessed and transformed testing dataset.
+    feature_columns_file_path (str): Path to the saved list of feature column names (as .pkl).
+"""
+
+    # File path to the serialized preprocessing object (e.g., imputer, scaler, encoder)
+    transformed_object_file_path: str
+
+    # File path to the transformed training dataset (after preprocessing)
+    transformed_train_file_path: str
+
+    # File path to the transformed testing dataset (after preprocessing)
+    transformed_test_file_path: str
+
+    # feature_columns_file_path: str
+
 

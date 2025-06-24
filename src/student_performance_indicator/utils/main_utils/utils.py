@@ -1,6 +1,8 @@
 import pandas as pd
 import numpy as np
+from typing import Any, Dict,Tuple
 import yaml
+import pickle
 import os
 import sys
 
@@ -120,4 +122,91 @@ def write_yaml_file(file_path: str, content: dict, replace: bool = False) -> Non
 
     except Exception as e:
         logger.error("Failed to write yaml file", exc_info=True)
+        raise StudentPerformanceException(e, sys)
+
+
+# ==========================
+# SAVE NUMPY ARRAY TO DISK
+# ==========================
+
+def save_numpy_array_data(file_path: str, array: np.array):
+    """
+    Saves a NumPy array to a .npy file.
+
+    Args:
+        file_path (str): Where to save the .npy file.
+        array (np.array): The NumPy array to save.
+    """
+    try:
+        # Create directory if it doesn't exist
+        dir_path = os.path.dirname(file_path)
+        os.makedirs(dir_path, exist_ok=True)
+
+        # Save array in binary format
+        with open(file_path, "wb") as file_obj:
+            np.save(file_obj, array)
+
+    except Exception as e:
+        logger.error("Failed to save numpy array file", exc_info=True)
+        raise StudentPerformanceException(e, sys)
+
+# =====================
+# SAVE PICKLE OBJECT
+# =====================
+
+def save_object(file_path: str, obj: object) -> None:
+    """
+    Saves any Python object to disk using Pickle.
+
+    Args:
+        file_path (str): Destination file path.
+        obj (object): Python object to serialize and save.
+    """
+    try:
+        logger.info("Entered the save_object method of MainUtils class")
+
+        # Create folder if it doesn't exist
+        os.makedirs(os.path.dirname(file_path), exist_ok=True)
+
+        # Save the object using Pickle
+        with open(file_path, "wb") as file_obj:
+            pickle.dump(obj, file_obj)
+
+        logger.info("Exited the save_object method of MainUtils class")
+    except Exception as e:
+        logger.error("Failed to save pickle file", exc_info=True)
+        raise StudentPerformanceException(e, sys)
+
+
+# ================
+# LOAD PICKLE FILE
+# ================
+
+def load_object(file_path: str) -> Any:
+    """
+    Load and deserialize a Python object from a pickle file.
+
+    Args:
+        file_path (str): Path to the pickle file.
+
+    Returns:
+        Any: Deserialized Python object.
+
+    Raises:
+        NetworkSecurityException: If file does not exist or loading fails.
+    """
+    try:
+        if not os.path.exists(file_path):
+            message = f"The file: {file_path} does not exist."
+            logger.error(message)
+            raise FileNotFoundError(message)
+
+        with open(file_path, "rb") as file_obj:
+            logger.info(f"Loading object from file: {file_path}")
+            obj = pickle.load(file_obj)
+            logger.info(f"Successfully loaded object from file: {file_path}")
+            return obj
+
+    except Exception as e:
+        logger.error(f"Failed to load object from file: {file_path}", exc_info=True)
         raise StudentPerformanceException(e, sys)

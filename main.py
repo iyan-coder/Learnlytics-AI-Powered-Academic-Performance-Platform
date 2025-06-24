@@ -25,12 +25,14 @@ import pandas as pd  # For working with tabular data
 from student_performance_indicator.constant import training_pipeline
 from student_performance_indicator.components.data_ingestion import DataIngestion
 from student_performance_indicator.components.data_validation import DataValidation
+from student_performance_indicator.components.data_tranformation import DataTransformation
 
 # Import configuration entities
 from student_performance_indicator.entity.config_entity import(
     TrainingPipelineConfig,
     DataIngestionConfig,
-    DataValidationConfig
+    DataValidationConfig,
+    DataTransformationConfig
 )
 # Custom error and logging handling
 from student_performance_indicator.exception.exception import StudentPerformanceException # Custom exception for standardized error handling
@@ -68,6 +70,18 @@ if __name__ == "__main__":
         data_validation_artifact = data_validation.initiate_data_validation()
         logger.info("Data validation completed.")
         print(data_validation_artifact)
+
+        
+        # ======================
+        # Step 4: Data Transformation
+        # ======================
+        logger.info("Starting data transformation...")
+        # Create and run the data transformation process
+        data_transformation_config = DataTransformationConfig(training_pipeline_config)
+        data_transformation = DataTransformation(data_validation_artifact, data_transformation_config)
+        data_transformation_artifact = data_transformation.initiate_data_transformation()
+        logger.info("Data transformation completed.")
+        print(data_transformation_artifact)
 
         
     except Exception as e:
