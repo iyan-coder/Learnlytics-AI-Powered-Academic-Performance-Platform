@@ -1,5 +1,7 @@
 import sys
+
 from student_performance_indicator.logger.logger import logger
+
 
 class StudentPerformanceException(Exception):
     """
@@ -18,7 +20,9 @@ class StudentPerformanceException(Exception):
             error_detail (sys): Pass the sys module for traceback extraction.
         """
         super().__init__(str(error_message))  # Base class init with basic error message
-        self.error_message = self.get_detailed_error_message(error_message, error_detail)
+        self.error_message = self.get_detailed_error_message(
+            error_message, error_detail
+        )
 
     def get_detailed_error_message(self, error: Exception, error_detail: sys) -> str:
         """
@@ -54,4 +58,3 @@ class StudentPerformanceException(Exception):
 #     except Exception as e:
 #         logger.error("Exception occurred", exc_info=True)
 #         raise StudentPerformanceException(e, sys)
-        

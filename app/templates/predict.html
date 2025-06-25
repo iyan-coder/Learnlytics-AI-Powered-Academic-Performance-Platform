@@ -1,0 +1,119 @@
+<!--
+  predict.html
+  This page provides a form for users to input student details
+  and predicts the math score using the backend ML model.
+  Includes real-time slider value display and asynchronous form submission.
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Set character encoding -->
+  <meta charset="UTF-8" />
+  <!-- Ensure proper responsive scaling -->
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Student Math Score Predictor</title>
+  <!-- Link external stylesheet -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+  <div class="container">
+    <!-- Page heading -->
+    <h2>📊 Student Math Score Prediction</h2>
+
+    <!-- Prediction form -->
+    <form id="predictForm">
+      <!-- Dropdown for Gender -->
+      <label>Gender</label>
+      <select name="gender">
+        <option value="female">Female</option>
+        <option value="male">Male</option>
+      </select>
+
+      <!-- Dropdown for Race/Ethnicity -->
+      <label>Race/Ethnicity</label>
+      <select name="race_ethnicity">
+        <option value="group A">Group A</option>
+        <option value="group B">Group B</option>
+        <option value="group C">Group C</option>
+        <option value="group D">Group D</option>
+        <option value="group E">Group E</option>
+      </select>
+
+      <!-- Dropdown for Parental Education Level -->
+      <label>Parental Education</label>
+      <select name="parental_level_of_education">
+        <option value="some high school">Some High School</option>
+        <option value="high school">High School</option>
+        <option value="associate's degree">Associate's Degree</option>
+        <option value="some college">Some College</option>
+        <option value="bachelor's degree">Bachelor's Degree</option>
+        <option value="master's degree">Master's Degree</option>
+      </select>
+
+      <!-- Dropdown for Lunch Type -->
+      <label>Lunch</label>
+      <select name="lunch">
+        <option value="standard">Standard</option>
+        <option value="free/reduced">Free/Reduced</option>
+      </select>
+
+      <!-- Dropdown for Test Preparation Course -->
+      <label>Test Preparation Course</label>
+      <select name="test_preparation_course">
+        <option value="none">None</option>
+        <option value="completed">Completed</option>
+      </select>
+
+      <!-- Slider input for Reading Score with live value display -->
+      <label>Reading Score: <span id="readingValue">70</span></label>
+      <input type="range" name="reading_score" id="reading" min="1" max="100" value="70">
+
+      <!-- Slider input for Writing Score with live value display -->
+      <label>Writing Score: <span id="writingValue">70</span></label>
+      <input type="range" name="writing_score" id="writing" min="1" max="100" value="70">
+
+      <!-- Submit button -->
+      <button type="submit" class="button">Predict</button>
+    </form>
+
+    <!-- Div to show prediction results -->
+    <div id="result"></div>
+  </div>
+
+  <script>
+    // Get slider elements and their value display spans
+    const reading = document.getElementById('reading');
+    const writing = document.getElementById('writing');
+    const readingValue = document.getElementById('readingValue');
+    const writingValue = document.getElementById('writingValue');
+
+    // Update displayed reading score value on slider move
+    reading.addEventListener('input', () => readingValue.textContent = reading.value);
+    // Update displayed writing score value on slider move
+    writing.addEventListener('input', () => writingValue.textContent = writing.value);
+
+    // Handle form submission asynchronously to call backend prediction API
+    document.getElementById('predictForm').addEventListener('submit', async function (e) {
+      e.preventDefault();  // Prevent default page reload on submit
+
+      // Convert form data to JSON object
+      const formData = new FormData(this);
+      const data = Object.fromEntries(formData.entries());
+
+      // POST request to /predictdata endpoint with JSON payload
+      const response = await fetch("/predictdata", {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(data)
+      });
+
+      // Parse JSON response from backend
+      const result = await response.json();
+
+      // Display the predicted math score in the result div
+      document.getElementById('result').innerHTML = `<h3>📈 Predicted Math Score: ${result.math_score}</h3>`;
+    });
+  </script>
+</body>
+</html>

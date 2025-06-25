@@ -1,21 +1,33 @@
-from student_performance_indicator.exception.exception import StudentPerformanceException # Custom exception for standardized error handling
-from student_performance_indicator.logger.logger import logger  # Logger for tracking pipeline execution
-
-from student_performance_indicator.entity.config_entity import DataIngestionConfig # Configuration data class
-from student_performance_indicator.entity.artifact_entity import DataIngetionArtifact  # Artifact class for outputs
-
 import os  # OS functions for file paths and directories
 import sys  # For getting system-specific info in exception
-import pandas as pd  # DataFrame for data manipulation
+
 import numpy as np  # For handling missing values
+import pandas as pd  # DataFrame for data manipulation
 import pymongo  # MongoDB connector
-from sklearn.model_selection import train_test_split  # Train-test splitting
-from student_performance_indicator.utils.main_utils.utils import generate_schema_from_csv
-from student_performance_indicator.constant.training_pipeline import SCHEMA_FILE_PATH
 from dotenv import load_dotenv  # Load environment variables from .env file
+from sklearn.model_selection import train_test_split  # Train-test splitting
+
+from student_performance_indicator.constant.training_pipeline import SCHEMA_FILE_PATH
+from student_performance_indicator.entity.artifact_entity import (
+    DataIngetionArtifact,
+)  # Artifact class for outputs
+from student_performance_indicator.entity.config_entity import (
+    DataIngestionConfig,
+)  # Configuration data class
+from student_performance_indicator.exception.exception import (
+    StudentPerformanceException,
+)  # Custom exception for standardized error handling
+from student_performance_indicator.logger.logger import (
+    logger,
+)  # Logger for tracking pipeline execution
+from student_performance_indicator.utils.main_utils.utils import (
+    generate_schema_from_csv,
+)
+
 load_dotenv()  # Load .env file into environment variables
 
 MONGO_DB_URL = os.getenv("MONGO_DB_URL")  # Read MongoDB URL from .env
+
 
 class DataIngestion:
     """
@@ -30,7 +42,9 @@ class DataIngestion:
         Constructor: Initializes DataIngestion with configuration object
         """
         try:
-            self.data_ingestion_config = data_ingestion_config  # Save config for use in methods
+            self.data_ingestion_config = (
+                data_ingestion_config  # Save config for use in methods
+            )
             logger.info("DataIngestion initialized with config.")
         except Exception as e:
             logger.error("Error during DataIngestion initialization", exc_info=True)
@@ -43,20 +57,32 @@ class DataIngestion:
         """
         try:
             logger.info("Connecting to MongoDB for data export.")
-            database_name = self.data_ingestion_config.database_name  # Get DB name from config
-            collection_name = self.data_ingestion_config.collection_name  # Get collection name from config
+            database_name = (
+                self.data_ingestion_config.database_name
+            )  # Get DB name from config
+            collection_name = (
+                self.data_ingestion_config.collection_name
+            )  # Get collection name from config
 
             self.mongo_client = pymongo.MongoClient(MONGO_DB_URL)  # Connect to MongoDB
             logger.info(f"Connected to MongoDB: {MONGO_DB_URL}")
 
-            collection = self.mongo_client[database_name][collection_name]  # Access specific collection
+            collection = self.mongo_client[database_name][
+                collection_name
+            ]  # Access specific collection
             logger.info(f"Accessing collection: {database_name}.{collection_name}")
 
-            df = pd.DataFrame(list(collection.find()))  # Convert collection to DataFrame
-            logger.info(f"Fetched {df.shape[0]} records from MongoDB collection: {collection_name}")
+            df = pd.DataFrame(
+                list(collection.find())
+            )  # Convert collection to DataFrame
+            logger.info(
+                f"Fetched {df.shape[0]} records from MongoDB collection: {collection_name}"
+            )
 
             if "_id" in df.columns:
-                df.drop(columns=["_id"], inplace=True)  # Remove MongoDB default ID column
+                df.drop(
+                    columns=["_id"], inplace=True
+                )  # Remove MongoDB default ID column
                 logger.info("Dropped _id column from DataFrame")
 
             if df.empty:
@@ -73,12 +99,18 @@ class DataIngestion:
         Saves the cleaned DataFrame to a CSV file in the feature store path.
         """
         try:
-            feature_store_file_path = self.data_ingestion_config.feature_store_file_path  # Get output path
+            feature_store_file_path = (
+                self.data_ingestion_config.feature_store_file_path
+            )  # Get output path
             dir_path = os.path.dirname(feature_store_file_path)  # Get directory
-            os.makedirs(dir_path, exist_ok=True)  # Create directories if they don't exist
+            os.makedirs(
+                dir_path, exist_ok=True
+            )  # Create directories if they don't exist
             logger.info(f"Saving data to feature store path: {feature_store_file_path}")
 
-            dataframe.to_csv(feature_store_file_path, index=False, header=True)  # Save as CSV
+            dataframe.to_csv(
+                feature_store_file_path, index=False, header=True
+            )  # Save as CSV
             logger.info(f"Data exported to feature store at {feature_store_file_path}")
 
             return dataframe
@@ -99,20 +131,30 @@ class DataIngestion:
             logger.info("Splitting data into train and test sets.")
             train_set, test_set = train_test_split(
                 dataframe,
-                test_size=self.data_ingestion_config.train_test_split_ratio  # Get ratio from config
+                test_size=self.data_ingestion_config.train_test_split_ratio,  # Get ratio from config
             )
 
-            logger.info(f"Train set shape: {train_set.shape}, Test set shape: {test_set.shape}")
+            logger.info(
+                f"Train set shape: {train_set.shape}, Test set shape: {test_set.shape}"
+            )
 
             dir_path = os.path.dirname(self.data_ingestion_config.training_file_path)
             os.makedirs(dir_path, exist_ok=True)  # Ensure target directory exists
             logger.info(f"Saving train and test files to: {dir_path}")
 
-            train_set.to_csv(self.data_ingestion_config.training_file_path, index=False, header=True)
-            test_set.to_csv(self.data_ingestion_config.testing_file_path, index=False, header=True)
+            train_set.to_csv(
+                self.data_ingestion_config.training_file_path, index=False, header=True
+            )
+            test_set.to_csv(
+                self.data_ingestion_config.testing_file_path, index=False, header=True
+            )
 
-            logger.info(f"Train data saved to: {self.data_ingestion_config.training_file_path}")
-            logger.info(f"Test data saved to: {self.data_ingestion_config.testing_file_path}")
+            logger.info(
+                f"Train data saved to: {self.data_ingestion_config.training_file_path}"
+            )
+            logger.info(
+                f"Test data saved to: {self.data_ingestion_config.testing_file_path}"
+            )
 
         except Exception as e:
             logger.error("Error occurred during train-test split", exc_info=True)
@@ -129,12 +171,16 @@ class DataIngestion:
         try:
             logger.info("Starting data ingestion process.")
 
-            dataframe = self.export_collection_as_dataframe()  # Step 1: Load data from MongoDB
+            dataframe = (
+                self.export_collection_as_dataframe()
+            )  # Step 1: Load data from MongoDB
 
             if dataframe is None or dataframe.empty:
                 raise ValueError("Exported dataframe is None or empty.")
 
-            dataframe = self.export_data_into_feature_store(dataframe)  # Step 2: Save raw data
+            dataframe = self.export_data_into_feature_store(
+                dataframe
+            )  # Step 2: Save raw data
 
             generate_schema_from_csv(self.data_ingestion_config.feature_store_file_path)
             logger.info(f"Schema.yaml is saved to {SCHEMA_FILE_PATH}")
@@ -143,7 +189,7 @@ class DataIngestion:
 
             data_ingestion_artifact = DataIngetionArtifact(
                 trained_file_path=self.data_ingestion_config.training_file_path,
-                test_file_path=self.data_ingestion_config.testing_file_path
+                test_file_path=self.data_ingestion_config.testing_file_path,
             )
 
             logger.info("Data ingestion completed successfully.")

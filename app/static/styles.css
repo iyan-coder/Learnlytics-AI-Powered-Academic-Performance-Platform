@@ -1,0 +1,102 @@
+/* static/styles.css  ────────────────────────────────────────── */
+
+/* ---- Page canvas ------------------------------------------------ */
+html,body{
+    margin:0;
+    height:100%;
+    font-family:Segoe UI,Tahoma,Geneva,Verdana,sans-serif;
+    background:linear-gradient(135deg,#f0f4ff 0%,#d9e6ff 100%);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+/* ---- Card container --------------------------------------------- */
+.container{
+    background:#fff;
+    padding:2.2rem 3rem;
+    border-radius:1.2rem;
+    box-shadow:0 10px 28px rgba(0,0,0,.08);
+    width:min(760px,92%);
+}
+
+/* ---- Heading ---------------------------------------------------- */
+h2{
+    margin:0 0 1.8rem;
+    text-align:center;
+    color:#1e2a78;
+}
+
+/* ---- Form grid: label | input  ---------------------------------- */
+form{
+    display:grid;
+    grid-template-columns:180px 1fr;      /* label  |  input  */
+    gap:1.1rem 1.6rem;
+}
+
+/* ---- Labels ----------------------------------------------------- */
+label{
+    font-weight:600;
+    color:#1e2a78;
+    align-self:center;                   /* vertically-center text */
+}
+
+/* ---- Selects & sliders ----------------------------------------- */
+select,
+input[type=range]{
+    width:100%;
+    padding:.45rem .6rem;
+    font-size:.92rem;
+    border:1px solid #aab6ee;
+    border-radius:.45rem;
+    background:#f7f9ff;
+}
+
+/* Slider track & thumb */
+input[type=range]{
+    appearance:none;
+    height:6px;
+    background:#e3e8ff;
+    border:none;
+}
+input[type=range]::-webkit-slider-thumb{
+    appearance:none;
+    height:18px;width:18px;
+    border-radius:50%;
+    background:#3f51b5;
+    cursor:pointer;
+}
+
+/* ---- Live value next to sliders -------------------------------- */
+#readingValue,
+#writingValue{
+    color:#3f51b5;
+    font-weight:700;
+}
+
+/* ---- Submit button --------------------------------------------- */
+.button{
+    grid-column:1 / -1;                  /* span full width */
+    justify-self:center;
+    margin-top:1.4rem;
+    padding:.65rem 1.8rem;
+    font-size:1rem;
+    font-weight:600;
+    color:#fff;
+    background:#3f51b5;
+    border:none;
+    border-radius:.6rem;
+    cursor:pointer;
+    transition:background .25s;
+}
+.button:hover{ background:#2c3a8c; }
+
+/* ---- Prediction result banner ---------------------------------- */
+#result{
+    grid-column:1 / -1;
+    margin-top:1.6rem;
+    text-align:center;
+    font-size:1.30rem;
+    font-weight:600;
+    color:#006400;
+}

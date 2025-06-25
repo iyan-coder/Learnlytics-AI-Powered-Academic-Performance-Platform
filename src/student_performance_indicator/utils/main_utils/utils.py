@@ -1,14 +1,19 @@
-import pandas as pd
-import numpy as np
-from typing import Any, Dict,Tuple
-import yaml
-import pickle
 import os
+import pickle
 import sys
+from datetime import datetime
+from typing import Any, Dict, Tuple
+
+import numpy as np
+import pandas as pd
+import yaml
 
 from student_performance_indicator.constant.training_pipeline import SCHEMA_FILE_PATH
+from student_performance_indicator.exception.exception import (
+    StudentPerformanceException,
+)
 from student_performance_indicator.logger.logger import logger
-from student_performance_indicator.exception.exception import StudentPerformanceException
+
 
 def generate_schema_from_csv(csv_path, save_path=SCHEMA_FILE_PATH):
     logger.info("Initializing schema.yaml generation...")
@@ -20,8 +25,8 @@ def generate_schema_from_csv(csv_path, save_path=SCHEMA_FILE_PATH):
         schema = {
             "columns": {},
             "required_columns": df.columns.tolist(),
-            "categorical_columns": df.select_dtypes(include='object').columns.tolist(),
-            "numerical_columns": df.select_dtypes(include= [np.number]).columns.tolist()
+            "categorical_columns": df.select_dtypes(include="object").columns.tolist(),
+            "numerical_columns": df.select_dtypes(include=[np.number]).columns.tolist(),
         }
 
         for col in df.columns:
@@ -43,11 +48,12 @@ def generate_schema_from_csv(csv_path, save_path=SCHEMA_FILE_PATH):
     except Exception as e:
         logger.error("Error! schema.yaml generation failed", exc_info=True)
         raise StudentPerformanceException(e, sys)
-    
+
 
 # =====================
 # READ YAML FILE METHOD
 # =====================
+
 
 def read_yaml_file(file_path: str) -> dict:
     """
@@ -67,17 +73,18 @@ def read_yaml_file(file_path: str) -> dict:
         with open(file_path, "rb") as yaml_file:
             # Parse and return content as dictionary
             return yaml.safe_load(yaml_file)
-    
+
     except Exception as e:
         # Log full error traceback for debugging
         logger.error("Could not read_yaml_file", exc_info=True)
         # Raise custom exception with system info
         raise StudentPerformanceException(e, sys)
-    
+
 
 # ======================
 # WRITE YAML FILE METHOD
 # ======================
+
 
 def convert_numpy(obj):
     if isinstance(obj, (np.integer, np.int32, np.int64)):
@@ -113,11 +120,11 @@ def write_yaml_file(file_path: str, content: dict, replace: bool = False) -> Non
         # Write dictionary content to YAML file
         with open(file_path, "w") as file:
             yaml.dump(
-                convert_numpy(content),           # Dictionary to write
-                file,                       # File object
-                default_flow_style=False,   # Use block YAML style (cleaner)
-                sort_keys=False,            # Preserve original dictionary order
-                Dumper=yaml.SafeDumper,     # Use safe dumper (safe serialization)
+                convert_numpy(content),  # Dictionary to write
+                file,  # File object
+                default_flow_style=False,  # Use block YAML style (cleaner)
+                sort_keys=False,  # Preserve original dictionary order
+                Dumper=yaml.SafeDumper,  # Use safe dumper (safe serialization)
             )
 
     except Exception as e:
@@ -128,6 +135,7 @@ def write_yaml_file(file_path: str, content: dict, replace: bool = False) -> Non
 # ==========================
 # SAVE NUMPY ARRAY TO DISK
 # ==========================
+
 
 def save_numpy_array_data(file_path: str, array: np.array):
     """
@@ -150,9 +158,11 @@ def save_numpy_array_data(file_path: str, array: np.array):
         logger.error("Failed to save numpy array file", exc_info=True)
         raise StudentPerformanceException(e, sys)
 
+
 # =====================
 # SAVE PICKLE OBJECT
 # =====================
+
 
 def save_object(file_path: str, obj: object) -> None:
     """
@@ -182,6 +192,7 @@ def save_object(file_path: str, obj: object) -> None:
 # LOAD PICKLE FILE
 # ================
 
+
 def load_object(file_path: str) -> Any:
     """
     Load and deserialize a Python object from a pickle file.
@@ -210,3 +221,21 @@ def load_object(file_path: str) -> Any:
     except Exception as e:
         logger.error(f"Failed to load object from file: {file_path}", exc_info=True)
         raise StudentPerformanceException(e, sys)
+
+
+# ====================
+# LOAD lATEST ARTIFACT
+# ====================
+
+
+def get_latest_artifact_dir(base_dir="Artifacts"):
+    # Get all directories under base_dir
+    dirs = [d for d in os.listdir(base_dir) if os.path.isdir(os.path.join(base_dir, d))]
+
+    # Convert to datetime for sorting
+    dirs = sorted(
+        dirs, key=lambda x: datetime.strptime(x, "%m_%d_%Y_%H_%M_%S"), reverse=True
+    )
+
+    latest_dir = dirs[0]
+    return os.path.join(base_dir, latest_dir)

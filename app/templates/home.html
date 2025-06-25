@@ -1,0 +1,28 @@
+<!--
+  home.html
+  This is the home page for the Student Math Score Predictor web app.
+  It welcomes users and provides a navigation link to the prediction page.
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Set character encoding -->
+  <meta charset="UTF-8" />
+  <!-- Ensure responsive scaling on all devices -->
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Welcome</title>
+  <!-- Link to external stylesheet -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body class="home">
+  <div class="container">
+    <!-- Main heading with emoji -->
+    <h1>🎓 Welcome to the Student Math Score Predictor</h1>
+    <!-- Brief instruction text -->
+    <p>Click below to predict your math score using your details.</p>
+    <!-- Navigation button to prediction page -->
+    <a href="{{ url_for('predict_page') }}" class="button">Go to Prediction</a>
+  </div>
+</body>
+</html>

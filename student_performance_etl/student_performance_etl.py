@@ -1,28 +1,35 @@
 # === Built-in and External Imports ===
+import json
 import os
 import sys
-import json
+
+import numpy as np
 
 # Data handling libraries
 import pandas as pd
-import numpy as np
 import pymongo
-
-# Custom exception and logging modules (defined in your project)
-from student_performance_indicator.logger.logger import logger
-from student_performance_indicator.exception.exception import StudentPerformanceException
 
 # Load environment variables (e.g., DB connection strings) securely
 from dotenv import load_dotenv
+
+from student_performance_indicator.exception.exception import (
+    StudentPerformanceException,
+)
+
+# Custom exception and logging modules (defined in your project)
+from student_performance_indicator.logger.logger import logger
+
 load_dotenv()
 
 # Get MongoDB connection string from .env file
 MONGO_DB_URL = os.getenv("MONGO_DB_URL")
-print(MONGO_DB_URL)  #Remove or log securely in production
+print(MONGO_DB_URL)  # Remove or log securely in production
 
 # For validating SSL certificates during MongoDB connection
 import certifi
+
 ca = certifi.where()
+
 
 # === Core Class for Data Extraction and MongoDB Insertion ===
 class StudentPerformanceExtract:
@@ -87,6 +94,7 @@ class StudentPerformanceExtract:
             logger.error("Error inserting records into MongoDB", exc_info=True)
             raise StudentPerformanceException(e, sys)
 
+
 # === Entry point for script execution ===
 if __name__ == "__main__":
     FILE_PATH = "data/stud.csv"  # Fixed backslash for cross-platform
@@ -94,7 +102,7 @@ if __name__ == "__main__":
     COLLECTION = "StudentPerformanceData"
 
     network_obj = StudentPerformanceExtract()
-    
+
     # Convert CSV to JSON
     records = network_obj.cv_to_json_convertor(FILE_PATH)
     print(records)
@@ -103,4 +111,3 @@ if __name__ == "__main__":
     no_of_records = network_obj.insert_data_to_mongodb(records, DATABASE, COLLECTION)
     print(f"{no_of_records} records inserted.")
     logger.info(f"{len(records)} records inserted into {DATABASE}.{COLLECTION}")
-

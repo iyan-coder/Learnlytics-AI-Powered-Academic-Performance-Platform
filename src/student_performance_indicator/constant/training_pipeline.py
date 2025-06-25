@@ -1,5 +1,6 @@
 import os
 import sys
+
 import numpy as np
 import pandas as pd
 
@@ -77,7 +78,6 @@ DATA_VALIDATION_DRIFT_REPORT_DIR: str = "drift_report"
 DATA_VALIDATION_DRIFT_REPORT_FILE_NAME: str = "report.yaml"
 
 
-
 # ============================
 # Data Transformation Imputer
 # ============================
@@ -91,9 +91,30 @@ DATA_TRANSFORMATION_TRANSFORMATED_DATA_DIR: str = "transformed"
 # Subdirectory to store serialized transformation objects like scalers or imputers
 DATA_TRANSFORMATION_TRANSFORMATED_OBJECT_DIR: str = "transformed_object"
 
-PREPROCESSING_OBJECT_FILE_NAME:str = "preprocessor"
+PREPROCESSING_OBJECT_FILE_NAME: str = "preprocessing.pkl"
 
+# Feature Name
+FEATURE_NAME: str = "feature_columns.pkl"
 
+# ===============================
+# Model Trainer Related Contants
+# ===============================
 
+# Directory name where all model trainer related files and artifacts will be stored
+MODEL_TRAINER_DIR_NAME: str = "model_trainer"
 
+# Subdirectory within the model trainer directory specifically for storing trained model files
+MODEL_TRAINER_TRAINED_MODEL_DIR: str = "trained_model"
 
+# Filename for the serialized trained model file (e.g., pickle format)
+MODEL_TRAINER_TRAINED_MODEL_NAME: str = "model.pkl"
+
+# Minimum acceptable accuracy score threshold for a model to be considered good enough
+# Models with accuracy below this will be rejected or retrained
+MODEL_TRAINER_EXPECTED_SCORE: float = 0.6
+
+# Threshold for detecting overfitting or underfitting by comparing train-test accuracy difference
+# If the difference exceeds this value, it may indicate overfitting or underfitting
+MODEL_TRAINER_OVER_FITTING_UNDER_FITTING_THRESHOLD: float = 0.05
+
+MODEL_CONFIG_FILE_NAME = os.path.join("config_dir", "model_config.yaml")

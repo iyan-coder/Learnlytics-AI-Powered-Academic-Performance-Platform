@@ -36,7 +36,9 @@ LOG_FILE_PATH = os.path.join(LOG_DIR, LOG_FILE_NAME)
 # This logger can be imported and reused across all modules.
 logger = logging.getLogger("ml_project_logger")
 logger.setLevel(logging.INFO)  # Set logging level to INFO and above
-logger.propagate = False       # Avoid duplicate logs if this logger is reused in multiple modules
+logger.propagate = (
+    False  # Avoid duplicate logs if this logger is reused in multiple modules
+)
 
 # --------------------------------------------------
 # 4. Define a standard format for all log messages
@@ -51,7 +53,7 @@ formatter = logging.Formatter(
 # 5. File Handler: Send logs to a log file
 # --------------------------------------------
 # All logs will be stored persistently in a timestamped file
-file_handler = logging.FileHandler(LOG_FILE_PATH,mode="a")
+file_handler = logging.FileHandler(LOG_FILE_PATH, mode="a")
 file_handler.setFormatter(formatter)
 logger.addHandler(file_handler)
 
@@ -66,4 +68,3 @@ logger.addHandler(console_handler)
 
 # # Optional: Debug
 # logger.info(f"Logger initialized. Logs being written to: {LOG_FILE_PATH}")
-
