@@ -128,8 +128,8 @@ class TrainingPipeline:
                 f"""
                 Model Trainer completed successfully.
                 Model path: {model_trainer_artifact.trained_model_file_path}
-                Train Accuracy: {model_trainer_artifact.train_metric_artifact.r2_score}
-                Test Accuracy: {model_trainer_artifact.test_metric_artifact.r2_score}
+                Train r2_score: {model_trainer_artifact.train_metric_artifact.r2_score}
+                Test r2_score: {model_trainer_artifact.test_metric_artifact.r2_score}
                 """
             )
             return model_trainer_artifact

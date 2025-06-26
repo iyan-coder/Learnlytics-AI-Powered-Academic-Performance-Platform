@@ -1,0 +1,35 @@
+# Python bytecode
+__pycache__/
+*.py[cod]
+
+# Logs and junk
+*.log
+.DS_Store
+Thumbs.db
+
+# Environments
+venv/
+.env
+
+# Git, DVC
+.git/
+.dvc/
+
+# Data & Models
+data/
+artifacts/
+Artifacts/
+models/
+model/
+saved_models/
+final_model/
+*.csv
+*.pkl
+*.joblib
+*.h5
+
+# Notebooks
+*.ipynb
+.ipynb_checkpoints/
+notebook/
+logs/

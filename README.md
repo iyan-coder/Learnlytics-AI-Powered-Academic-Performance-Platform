@@ -1,63 +1,118 @@
-### End to End Project for Student Performance Indicator
+# 🎓 Student Performance Indicator – Math Score Predictor  
+[![Python](https://img.shields.io/badge/python-3.11-blue.svg)](https://www.python.org)  
+[![Build Status](https://github.com/<your-user>/student-performance/actions/workflows/ci.yml/badge.svg)](https://github.com/<your-user>/student-performance/actions) 
+[![Docker Ready](https://img.shields.io/badge/docker-publish-green)](https://hub.docker.com/) 
+[![MLflow Tracking](https://img.shields.io/badge/MLflow-active-orange)](https://mlflow.org) 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-# Reusable Poetry ML Project Setup
+> **Predict a student’s *math score* from socio-economic, demographic and academic-behavioural features.**  
+> This repository demonstrates an **end-to-end regression pipeline** with **MLflow tracking, DVC/Dagshub data versioning, and multi-framework serving (Streamlit UI, Flask API, FastAPI API) – all fully Docker-ised and CI/CD-enabled on GitHub.  
 
-## Step-by-Step Poetry Setup
+---
 
-1. **Create a project folder**
-   ```bash
-   mkdir student-performance-indicator
-   cd student-performance-indicator
+## 🚀 Quick Glance
+| Aspect | Details |
+|--------|---------|
+| **Goal** | Predict continuous `math_score` |
+| **Model** | *Linear Regression* (best R²: **0.89 train / 0.867 test**), plus baseline + experiments tracked in MLflow |
+| **Metrics** | R², MAE, RMSE |
+| **Tracking / Versioning** | MLflow (experiments & model registry), DVC + Dagshub (data/artifacts), GitHub Actions (CI) |
+| **Serving** | `app/streamlit_app` • `app/flask_app` • `app/fastapi_app` |
+| **Containerisation** | Single Dockerfile; multi-stage build for slim production image |
+| **Author** | Gabriel Adebayo – Mechatronics student, project inspired by Krish Naik’s YouTube series |
 
+---
+
+## 🧠 End-to-End Pipeline
+
+main.py -> Orchestrates ⤵
+├─ Data Ingestion (raw → /data)
+├─ Data Validation (schema & sanity checks)
+├─ Data Transformation (preprocessor.pkl)
+├─ Model Training (LinearRegression, hyper-params)
+├─ Model Evaluation (R², MAE, RMSE, plots)
+└─ Model Pushing (model.pkl + preprocessor.pkl → final_model/)
+↳ All runs auto-logged in MLflow
+
+
+
+---
+
+## 🗂️ Project Structure
+
+student-performance/
+│
+├── .github/workflows/ci.yml ← Tests + lint + Docker build
+├── app/ ← Serving layer (three flavours)
+│ ├── streamlit_app/
+│ ├── flask_app/
+│ ├── fastapi_app/
+│ └── templates/ & static/
+│
+├── src/ ← Python package
+│ └── student_performance_indicator/
+│ ├── components/ ← ingestion, validation, etc.
+│ ├── pipeline/ ← train & predict pipelines
+│ ├── utils/
+│ ├── logger.py
+│ └── exception.py
+│
+├── data/ ← Raw CSV (⚠ Git-ignored by DVC)
+├── artifacts/ ← DVC-tracked intermediate outputs
+├── final_model/
+│ ├── preprocessor.pkl
+│ └── model.pkl
+│
+├── structure.txt ← Folder tree auto-generated
+├── requirements.txt
+├── Dockerfile
+└── README.md ← you are here
+
+yaml
+Copy
+Edit
+
+> **Note:** `MLproject` has been removed – experiment entry-points are handled via `main.py` + MLflow.
+
+---
+
+## 📊 EDA Highlights
+* Distribution of math scores (target)
+* Correlation heat-map of features vs. math score
+* Feature impacts of **parental education**, **lunch type**, **test preparation**, etc.
+
+---
+
+## 🔧 How to Run Locally
 
 ```bash
-poetry config virtualenvs.in-project true
-poetry init
+# 1 ▶ Clone & enter repo
+git clone https://github.com/<your-user>/student-performance.git
+cd student-performance
 
-name = "student_performance_indicator"
-requires-python = ">=3.8,<3.12"
+# 2 ▶ Create & activate environment
+python -m venv venv
+source venv/bin/activate  # Windows: venv\Scripts\activate
 
-poetry env use C:\Users\USER\AppData\Local\Programs\Python\Python310\python.exe
+# 3 ▶ Install deps
+pip install -r requirements.txt
 
-poetry add pandas numpy scikit-learn joblib streamlit flask python-dotenv
+# 4 ▶ Train + log run to MLflow
+python main.py
 
+# 5 ▶ Launch Streamlit UI
+streamlit run app/streamlit_app/app.py
 
-poetry add pandas@^1.5 numpy@^1.23 scikit-learn@^1.2 fastapi@^0.95 uvicorn@^0.22 streamlit@^1.25 xgboost@^1.7 python-dotenv@^1.0 joblib@^1.2
+# Build image
+docker build -t math-score-predictor .
 
-
-poetry add --group dev black isort flake8
-
-poetry install
-
-poetry self add poetry-plugin-shell
-
-poetry shell
-
-poetry self add poetry-plugin-export
-
-poetry export -f requirements.txt --without-hashes -o requirements.txt
-
+# Run Streamlit (port 8501) *and* FastAPI (port 8000) via uvicorn
+docker run -p 8501:8501 -p 8000:8000 math-score-predictor
 
 ```
+### 🙏 Acknowledgements
 
-``` bash 
-type nul > format.bat
-```
-@echo off
-echo Running isort...
-poetry run isort .
+Krish Naik’s YouTube tutorials – foundational inspiration
 
-echo Running black...
-poetry run black .
+The open-source community (Scikit-learn, MLflow, DVC, Streamlit, FastAPI, Flask, Docker)
 
-echo Running flake8...
-poetry run flake8 .
-
-echo Done
-pause
-
-### how to get Structure
-```bash 
-tree /f > structure.txt
-notepad structure.txt
-```
