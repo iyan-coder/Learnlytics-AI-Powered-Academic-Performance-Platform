@@ -1,35 +1,43 @@
-# Python bytecode
+# Python bytecode and cache
 __pycache__/
 *.py[cod]
 
-# Logs and junk
+# Logs and runtime files
 *.log
-.DS_Store
-Thumbs.db
+*.db
+*.sqlite3
+*.env
+logs/
 
-# Environments
+# Jupyter notebooks and checkpoints
+*.ipynb
+.ipynb_checkpoints/
+
+# Virtual environments
 venv/
-.env
+.venv/
+env/
+.env/
 
-# Git, DVC
+# Git and DVC
 .git/
 .dvc/
 
-# Data & Models
+# Data, artifacts, and models
 data/
 artifacts/
 Artifacts/
 models/
 model/
-saved_models/
 final_model/
+saved_models/
 *.csv
 *.pkl
 *.joblib
 *.h5
 
-# Notebooks
-*.ipynb
-.ipynb_checkpoints/
+# Editor & IDE configs
+.vscode/
 notebook/
-logs/
+structure.txt
+format.bat

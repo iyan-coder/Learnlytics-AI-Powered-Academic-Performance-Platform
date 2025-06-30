@@ -1,22 +1,44 @@
-
 services:
-  streamlit:
+  # ─────────────────────────────────────────────────────────
+  # 1) Build the image once; every other service re-uses it
+  # ─────────────────────────────────────────────────────────
+  builder:
+    image: student-performance-image
     build: .
-    container_name: streamlit_app
-    command: streamlit run app/streamlit_app/app.py
+    # no command / ports – this container never runs
+
+  # ─────────────────────────────────────────────────────────
+  # 2) Streamlit service
+  # ─────────────────────────────────────────────────────────
+  streamlit_app:
+    image: student-performance-image
+    command: >
+      streamlit run app/streamlite_app.py
+      --server.address 0.0.0.0
+      --server.port 8501
     ports:
       - "8501:8501"
+    depends_on: [builder]
 
-  fastapi:
-    build: .
-    container_name: fastapi_app
-    command: uvicorn app.fastapi_app.main:app --host 0.0.0.0 --port 8000
+  # ─────────────────────────────────────────────────────────
+  # 3) FastAPI service
+  # ─────────────────────────────────────────────────────────
+  fastapi_app:
+    image: student-performance-image
+    command: uvicorn app.fastapi_app:app --host 0.0.0.0 --port 8000
     ports:
       - "8000:8000"
+    env_file:
+     - .env  # ✅ Add this
+  
+    depends_on: [builder]
 
-  flask:
-    build: .
-    container_name: flask_app
-    command: python app/flask_app/app.py
+  # ─────────────────────────────────────────────────────────
+  # 4) Flask service
+  # ─────────────────────────────────────────────────────────
+  flask_app:
+    image: student-performance-image
+    command: python app/flask_app.py
     ports:
       - "5000:5000"
+    depends_on: [builder]

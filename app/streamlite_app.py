@@ -38,10 +38,13 @@ with st.sidebar:
     st.markdown(
         """
         **Model:** LinearRegression
+
         **Data:** Kaggle – https://www.kaggle.com/datasets/spscientist/students-performance-in-exams?datasetId=74977
+
         **Author:** Gabriel Adebayo  
         ---
         [GitHub Repo](https://github.com/iyan-coder) | 
+        
         [LinkedIn](https://www.linkedin.com/in/gabriel-adebayo-2a0ba2281/)
         """
     )

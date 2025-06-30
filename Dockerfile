@@ -1,25 +1,26 @@
 # ───────────────────────────────────────────────
-# syntax=docker/dockerfile:1.6   # enables BuildKit extras
+# syntax=docker/dockerfile:1.6
 # Student-Performance – shared image for all apps
 # ───────────────────────────────────────────────
-# full image → pre-built wheels, faster
-
-FROM python:3.11      
+FROM python:3.11
 
 WORKDIR /app
 
-# 1️⃣ Copy dependency file FIRST so later code edits don’t bust the cache
-COPY requirements.txt .
+# 🔑  Make both /app/src 𝘢𝘯𝘥 /app importable
+ENV PYTHONPATH=/app/src:/app
 
-# 2️⃣ Install deps and cache pip wheels between builds
+# 1️⃣ Copy dependency list first (build-cache friendly)
+COPY requirements-prod.txt .
+
 RUN --mount=type=cache,target=/root/.cache/pip \
-    pip install --no-cache-dir -r requirements.txt
+    pip install --no-cache-dir --timeout=100 --retries=5 --prefer-binary \
+    -r requirements-prod.txt
 
-# 3️⃣ Copy the rest of the source (now tiny rebuilds)
+# 3️⃣ Copy the rest of the project
 COPY . .
 
-# 4️⃣ Open all ports used by the three interfaces
+# 4️⃣ Expose all ports the compose file maps
 EXPOSE 8501 8000 5000
 
-# 5️⃣ Default entry-point (override in docker-compose for FastAPI/Flask)
-CMD ["streamlit", "run", "app/streamlit_app/app.py"]
+# 5️⃣ Default entry-point (overridden by compose for FastAPI/Flask)
+CMD ["streamlit", "run", "app/streamlite_app.py"]

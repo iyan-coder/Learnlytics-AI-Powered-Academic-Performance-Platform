@@ -5,12 +5,14 @@ import certifi
 import pandas as pd
 import pymongo
 import uvicorn
+import mlflow
 from dotenv import load_dotenv
 from fastapi import FastAPI, File, Request, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse, RedirectResponse
 from starlette.responses import RedirectResponse
 from uvicorn import run as app_run
+from fastapi.templating import Jinja2Templates
 
 from student_performance_indicator.constant.training_pipeline import (
     DATA_INGESTION_COLLECTION_NAME,
@@ -32,15 +34,27 @@ from student_performance_indicator.utils.ml_utils.model.estimator import Network
 
 # === Load environment variables ===
 load_dotenv()
-mongo_db_url = os.getenv("MONGODB_URL_KEY")
-ca = certifi.where()
+
+# === MLflow + DAGSHub Tracking Config ===
+username = os.environ.get("DAGSHUB_USERNAME")
+token = os.environ.get("DAGSHUB_TOKEN")
+
+if not username or not token:
+    raise EnvironmentError("DAGSHUB credentials not found in environment variables!")
+
+mlflow.set_tracking_uri(
+    f"https://{username}:{token}@dagshub.com/iyan-coder/StudentPerformanceIndicator.mlflow"
+)
+mlflow.set_experiment("StudentPerformance")
 
 # === MongoDB setup ===
+mongo_db_url = os.getenv("MONGODB_URL_KEY")
+ca = certifi.where()
 client = pymongo.MongoClient(mongo_db_url, tlsCAFile=ca)
 database = client[DATA_INGESTION_DATABASE_NAME]
 collection = database[DATA_INGESTION_COLLECTION_NAME]
 
-# === FastAPI App ===
+# === FastAPI App Setup ===
 app = FastAPI()
 origins = ["*"]
 
@@ -51,13 +65,10 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-from fastapi.templating import Jinja2Templates
 
 templates = Jinja2Templates(directory="templates")
 
 # === Routes ===
-
-
 @app.get("/", tags=["authentication"])
 async def index():
     return RedirectResponse(url="/docs")
