@@ -10,6 +10,10 @@ jobs:
   build-train-eval:
     runs-on: ubuntu-latest
 
+    env:
+      DAGSHUB_USERNAME: ${{ secrets.DAGSHUB_USERNAME }}
+      DAGSHUB_TOKEN: ${{ secrets.DAGSHUB_TOKEN }}
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
