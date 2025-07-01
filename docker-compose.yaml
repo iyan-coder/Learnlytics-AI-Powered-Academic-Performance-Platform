@@ -70,5 +70,7 @@ services:
     ports:
       - "5001:5000"
     volumes:
-      - "D:/Projects/STUDENT PERRFROMANCE INDICATOR/mlflow-server/mlrun:/mlrun"
-      - "D:/Projects/STUDENT PERRFROMANCE INDICATOR/mlflow-server/mlruns:/mlruns"
+      # - "D:/Projects/STUDENT PERRFROMANCE INDICATOR/mlflow-server/mlrun:/mlrun"
+      # - "D:/Projects/STUDENT PERRFROMANCE INDICATOR/mlflow-server/mlruns:/mlruns"
+      - ./mlflow-server/mlruns:/mlruns
+      - ./mlflow-server/mlrun:/mlrun
