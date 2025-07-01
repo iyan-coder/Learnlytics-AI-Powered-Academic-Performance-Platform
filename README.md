@@ -1,7 +1,7 @@
 # 🎓 Student Performance Indicator – Math Score Predictor
 
 [![Python](https://img.shields.io/badge/python-3.11-blue.svg)](https://www.python.org)
-[![Build Status](https://github.com/iyan-coder/student-performance/actions/workflows/ci.yml/badge.svg)](https://github.com/iyan-coder/student-performance/actions)
+[![Build Status](https://github.com/iyan-coder/StudentPerformanceIndicator/actions/workflows/ci.yml/badge.svg)](https://github.com/iyan-coder/StudentPerformanceIndicator/actions)
 [![Docker Ready](https://img.shields.io/badge/docker-publish-green)](https://hub.docker.com/)
 [![MLflow Tracking](https://img.shields.io/badge/MLflow-active-orange)](https://mlflow.org)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
