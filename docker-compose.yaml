@@ -1,74 +1,51 @@
 version: "3.9"
 
 services:
-  # ─────────────────────────────────────────────────────────
-  # 1) Build image once; all other services reuse it
-  # ─────────────────────────────────────────────────────────
+  # 1) Image‑builder (does nothing at runtime)
   builder:
     image: student-performance-image
     build: .
-    command: ["true"]  # do nothing
+    command: ["true"]            # stay instant‑exit
+    # no ports
 
-
-  # ─────────────────────────────────────────────────────────
-  # 2) Streamlit App
-  # ─────────────────────────────────────────────────────────
+  # 2) Streamlit
   streamlit_app:
-  image: student-performance-image
-  command: streamlit run app/streamlite_app.py --server.address=0.0.0.0 --server.port=8501
-  ports: ["8501:8501"]
-  env_file:
-      - .env
-  depends_on:
-      - builder
+    image: student-performance-image
+    command: >
+      streamlit run app/streamlite_app.py
+      --server.address=0.0.0.0
+      --server.port=8501
+    ports:
+      - "8501:8501"
+    env_file: [.env]
+    depends_on: [builder]
 
-  # ─────────────────────────────────────────────────────────
-  # 3) FastAPI App
-  # ─────────────────────────────────────────────────────────
+  # 3) FastAPI
   fastapi_app:
     image: student-performance-image
     command: uvicorn app.fastapi_app:app --host 0.0.0.0 --port 8000
-    ports:
-      - "8000:8000"
-    env_file:
-      - .env
-    environment:
-      - RUNNING_IN_DOCKER=1
-    depends_on:
-      - builder
-      - mlflow
+    ports: ["8000:8000"]
+    env_file: [.env]
+    environment: [RUNNING_IN_DOCKER=1]
+    depends_on: [builder, mlflow]
 
-  # ─────────────────────────────────────────────────────────
-  # 4) Flask App
-  # ─────────────────────────────────────────────────────────
+  # 4) Flask
   flask_app:
     image: student-performance-image
-   
-    # ── use Gunicorn (production‑ready) and bind to 0.0.0.0 ──
-    command: >
-      gunicorn -w 2 -b 0.0.0.0:5000 app.flask_app:app
-    ports:
-      - "5000:5000"
-    env_file:
-      - .env
-    depends_on:
-      - builder
+    command: gunicorn -w 2 -b 0.0.0.0:5000 app.flask_app:app
+    ports: ["5000:5000"]
+    env_file: [.env]
+    depends_on: [builder]
 
-  # ─────────────────────────────────────────────────────────
-  # 5) MLflow Tracking Server
-  # ─────────────────────────────────────────────────────────
+  # 5) MLflow tracking
   mlflow:
     image: ghcr.io/mlflow/mlflow:v2.12.1
     command: >
       mlflow server
       --backend-store-uri sqlite:///mlrun/backend.db
       --default-artifact-root /mlruns
-      --host 0.0.0.0
-      --port 5000
-    ports:
-      - "5001:5000"
+      --host 0.0.0.0 --port 5000
+    ports: ["5001:5000"]
     volumes:
-      # - "D:/Projects/STUDENT PERRFROMANCE INDICATOR/mlflow-server/mlrun:/mlrun"
-      # - "D:/Projects/STUDENT PERRFROMANCE INDICATOR/mlflow-server/mlruns:/mlruns"
-      - ./mlflow-server/mlruns:/mlruns
       - ./mlflow-server/mlrun:/mlrun
+      - ./mlflow-server/mlruns:/mlruns
