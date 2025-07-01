@@ -23,17 +23,13 @@ FROM python:3.11-slim
 ENV PYTHONPATH=/app/src:/app
 WORKDIR /app
 
-# Copy the installed site‑packages from the deps stage
-COPY --from=deps /usr/local/lib/python3.11/site-packages \
-                 /usr/local/lib/python3.11/site-packages
 
-# Copy your code and model artefact
-COPY . .
-# If your model lives inside the repo (as you showed), this also copies it:
-#   final_model/model.pkl
+# Copy libraries **and** CLI binaries
+COPY --from=deps /usr/local/lib/python3.11/site-packages /usr/local/lib/python3.11/site-packages
+COPY --from=deps /usr/local/bin /usr/local/bin
 
 # Expose ports used by compose
 EXPOSE 8501 8000 5000
 
-# Default command (overridden by docker‑compose for FastAPI/Flask)
-CMD ["streamlit", "run", "app/streamlite_app.py", "--server.port=8501", "--server.address=0.0.0.0"]
+# Set a neutral default CMD (override in compose)
+CMD ["python", "-m", "http.server", "8000"]

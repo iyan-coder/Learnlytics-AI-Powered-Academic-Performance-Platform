@@ -7,21 +7,19 @@ services:
   builder:
     image: student-performance-image
     build: .
+    command: ["true"]  # do nothing
+
 
   # ─────────────────────────────────────────────────────────
   # 2) Streamlit App
   # ─────────────────────────────────────────────────────────
   streamlit_app:
-    image: student-performance-image
-    command: >
-      streamlit run app/streamlite_app.py
-      --server.address=0.0.0.0
-      --server.port=8501
-    ports:
-      - "8501:8501"
-    env_file:
+  image: student-performance-image
+  command: streamlit run app/streamlite_app.py --server.address=0.0.0.0 --server.port=8501
+  ports: ["8501:8501"]
+  env_file:
       - .env
-    depends_on:
+  depends_on:
       - builder
 
   # ─────────────────────────────────────────────────────────
