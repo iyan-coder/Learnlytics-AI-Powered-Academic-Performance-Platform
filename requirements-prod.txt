@@ -4,12 +4,14 @@ streamlit==1.25.0
 uvicorn==0.22.0
 pandas==1.5.0
 numpy==1.25.0          # wheel available for cp311
-scikit-learn==1.4.2    # wheel available for cp311
+scikit-learn==1.2.0   # wheel available for cp311
 joblib==1.5.1
 pydantic==2.11.7
 python-dotenv==1.0.0
 matplotlib==3.8.4      # optional, for plots in Streamlit
 pymongo==4.13.2
 PyYAML
-dagshub
-mlflow
+mlflow==3.1.1
+python-multipart==0.0.20
+python-multipart
+xgboost==2.0.3

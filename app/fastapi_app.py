@@ -35,16 +35,15 @@ from student_performance_indicator.utils.ml_utils.model.estimator import Network
 # === Load environment variables ===
 load_dotenv()
 
-# === MLflow + DAGSHub Tracking Config ===
-username = os.environ.get("DAGSHUB_USERNAME")
-token = os.environ.get("DAGSHUB_TOKEN")
+# === MLflow Local Tracking Config ===
+# If running inside Docker, use host.docker.internal instead of localhost
+import os
 
-if not username or not token:
-    raise EnvironmentError("DAGSHUB credentials not found in environment variables!")
-
-mlflow.set_tracking_uri(
-    f"https://{username}:{token}@dagshub.com/iyan-coder/StudentPerformanceIndicator.mlflow"
-)
+if os.getenv("RUNNING_IN_DOCKER") == "1":
+    mlflow.set_tracking_uri("http://mlflow:5000")  # ✅ Docker container name + internal port
+else:
+    mlflow.set_tracking_uri("http://localhost:5001")  # ✅ When running locally outside Docker
+ 
 mlflow.set_experiment("StudentPerformance")
 
 # === MongoDB setup ===
@@ -135,5 +134,3 @@ async def predict_route(request: Request, file: UploadFile = File(...)):
         raise StudentPerformanceException(e, sys)
 
 
-if __name__ == "__main__":
-    app_run(app, host="0.0.0.0", port=8000, reload=True)

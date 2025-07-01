@@ -1,27 +1,31 @@
+version: "3.9"
+
 services:
   # ─────────────────────────────────────────────────────────
-  # 1) Build the image once; every other service re-uses it
+  # 1) Build image once; all other services reuse it
   # ─────────────────────────────────────────────────────────
   builder:
     image: student-performance-image
     build: .
-    # no command / ports – this container never runs
 
   # ─────────────────────────────────────────────────────────
-  # 2) Streamlit service
+  # 2) Streamlit App
   # ─────────────────────────────────────────────────────────
   streamlit_app:
     image: student-performance-image
     command: >
       streamlit run app/streamlite_app.py
-      --server.address 0.0.0.0
-      --server.port 8501
+      --server.address=0.0.0.0
+      --server.port=8501
     ports:
       - "8501:8501"
-    depends_on: [builder]
+    env_file:
+      - .env
+    depends_on:
+      - builder
 
   # ─────────────────────────────────────────────────────────
-  # 3) FastAPI service
+  # 3) FastAPI App
   # ─────────────────────────────────────────────────────────
   fastapi_app:
     image: student-performance-image
@@ -29,16 +33,42 @@ services:
     ports:
       - "8000:8000"
     env_file:
-     - .env  # ✅ Add this
-  
-    depends_on: [builder]
+      - .env
+    environment:
+      - RUNNING_IN_DOCKER=1
+    depends_on:
+      - builder
+      - mlflow
 
   # ─────────────────────────────────────────────────────────
-  # 4) Flask service
+  # 4) Flask App
   # ─────────────────────────────────────────────────────────
   flask_app:
     image: student-performance-image
-    command: python app/flask_app.py
+   
+    # ── use Gunicorn (production‑ready) and bind to 0.0.0.0 ──
+    command: >
+      gunicorn -w 2 -b 0.0.0.0:5000 app.flask_app:app
     ports:
       - "5000:5000"
-    depends_on: [builder]
+    env_file:
+      - .env
+    depends_on:
+      - builder
+
+  # ─────────────────────────────────────────────────────────
+  # 5) MLflow Tracking Server
+  # ─────────────────────────────────────────────────────────
+  mlflow:
+    image: ghcr.io/mlflow/mlflow:v2.12.1
+    command: >
+      mlflow server
+      --backend-store-uri sqlite:///mlrun/backend.db
+      --default-artifact-root /mlruns
+      --host 0.0.0.0
+      --port 5000
+    ports:
+      - "5001:5000"
+    volumes:
+      - "D:/Projects/STUDENT PERRFROMANCE INDICATOR/mlflow-server/mlrun:/mlrun"
+      - "D:/Projects/STUDENT PERRFROMANCE INDICATOR/mlflow-server/mlruns:/mlruns"

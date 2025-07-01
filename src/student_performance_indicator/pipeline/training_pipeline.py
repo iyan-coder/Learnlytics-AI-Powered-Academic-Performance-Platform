@@ -2,7 +2,7 @@
 import os  # For handling file paths
 import sys  # For handling system-level errors
 
-import dagshub
+
 import mlflow
 import numpy as np  # For numerical operations
 import pandas as pd  # For working with tabular data
@@ -45,7 +45,12 @@ from student_performance_indicator.utils.main_utils.utils import (
     load_object,
 )
 
-dagshub.init(repo_owner="iyan-coder", repo_name="networksecurity", mlflow=True)
+import mlflow, os
+if os.getenv("RUNNING_IN_DOCKER") == "1":
+    mlflow.set_tracking_uri("http://mlflow:5000")      # inside container
+else:
+    mlflow.set_tracking_uri("http://localhost:5001")   # running locally
+mlflow.set_experiment("StudentPerformance")
 
 
 class TrainingPipeline:

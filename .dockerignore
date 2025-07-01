@@ -29,10 +29,10 @@ artifacts/
 Artifacts/
 models/
 model/
-final_model/
+# final_model/
 saved_models/
 *.csv
-*.pkl
+# *.pkl
 *.joblib
 *.h5
 

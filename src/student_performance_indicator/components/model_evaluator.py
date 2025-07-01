@@ -3,8 +3,6 @@ import datetime as dt
 import os  # Helps with file and folder paths
 import pathlib
 import sys  # Helps handle system-level errors
-
-import dagshub
 import joblib  # Used to load or save trained models
 import mlflow  # Used to track model experiments
 import mlflow.sklearn  # Helps log sklearn models to MLflow
@@ -36,10 +34,14 @@ from student_performance_indicator.utils.ml_utils.model.model_factory import (
     load_model_config,
 )  # Loads which ML models and parameters we want to try
 
-dagshub.init(
-    repo_owner="iyan-coder", repo_name="StudentPerformanceIndicator", mlflow=True
-)
+import os
 
+if os.getenv("RUNNING_IN_DOCKER") == "1":
+    mlflow.set_tracking_uri("http://mlflow:5000")  # ✅ Docker container name + internal port
+else:
+    mlflow.set_tracking_uri("http://localhost:5001")  # ✅ When running locally outside Docker
+  # Inside Docker (client) talking to host
+mlflow.set_experiment("StudentPerformance")
 
 class ModelEvaluator:
     """

@@ -1,40 +1,54 @@
-name: CI Pipeline
+name: CI/CD
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [main]
   pull_request:
-    branches: [ "main" ]
 
 jobs:
-  build-train-eval:
+  build:
     runs-on: ubuntu-latest
 
-    env:
-      DAGSHUB_USERNAME: ${{ secrets.DAGSHUB_USERNAME }}
-      DAGSHUB_TOKEN: ${{ secrets.DAGSHUB_TOKEN }}
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
+      # ------------ Docker Buildx (faster layer caching) ------------
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      # ------------ Cache pip wheels across builds ------------------
+      - name: Cache pip wheels
+        uses: actions/cache@v4
         with:
-          python-version: "3.10"
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('requirements-prod.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
 
-      - name: Install dependencies
+      # ------------ Build images (deps layer reuses pip cache) -------
+      - name: Build Docker images
         run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
+          docker compose build --progress plain
 
-      - name: Set PYTHONPATH
-        run: echo "PYTHONPATH=$PYTHONPATH:$(pwd)/src" >> $GITHUB_ENV
-
-      - name: Run Training
+      # ------------ Optional smoke test -----------------------------
+      - name: Spin up stack & smoke test
         run: |
-          python -m student_performance_indicator.pipeline.training_pipeline
+          docker compose up -d
+          sleep 10              # give containers a moment
+          curl -sf http://localhost:5001 >/dev/null   # MLflow
+          curl -sf http://localhost:8000/docs >/dev/null   # FastAPI
+          docker compose down
 
-      - name: Run Evaluation
-        run: |
-          python -m student_performance_indicator.pipeline.evaluation_pipeline
+      # ------------ Optional deploy step (SSH to server) ------------
+      # - name: Deploy to EC2
+      #   uses: appleboy/ssh-action@master
+      #   with:
+      #     host: ${{ secrets.EC2_HOST }}
+      #     username: ubuntu
+      #     key: ${{ secrets.EC2_SSH_KEY }}
+      #     script: |
+      #       cd /home/ubuntu/myapp
+      #       git pull origin main
+      #       docker compose down
+      #       docker compose build
+      #       docker compose up -d
