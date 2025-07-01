@@ -2,7 +2,6 @@
 import os  # For handling file paths
 import sys  # For handling system-level errors
 
-
 import mlflow
 import numpy as np  # For numerical operations
 import pandas as pd  # For working with tabular data
@@ -45,11 +44,10 @@ from student_performance_indicator.utils.main_utils.utils import (
     load_object,
 )
 
-import mlflow, os
 if os.getenv("RUNNING_IN_DOCKER") == "1":
-    mlflow.set_tracking_uri("http://mlflow:5000")      # inside container
+    mlflow.set_tracking_uri("http://mlflow:5000")  # inside container
 else:
-    mlflow.set_tracking_uri("http://localhost:5001")   # running locally
+    mlflow.set_tracking_uri("http://localhost:5001")  # running locally
 mlflow.set_experiment("StudentPerformance")
 
 
@@ -145,7 +143,6 @@ class TrainingPipeline:
     def run_training_pipeline(self):
         try:
             mlflow.set_experiment("StudentPerformanceIndicator")
-            mlflow.autolog(disable=True)
 
             with mlflow.start_run(run_name="Full_Training_Pipeline") as run:
                 run_id = run.info.run_id

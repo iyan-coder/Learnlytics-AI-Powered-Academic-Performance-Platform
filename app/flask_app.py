@@ -85,4 +85,3 @@ def predict_datapoint():
 if __name__ == "__main__":
     # Run the Flask app with debug mode enabled for development
     app.run(debug=True)
-   

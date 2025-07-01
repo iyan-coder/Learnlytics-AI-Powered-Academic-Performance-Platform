@@ -2,6 +2,7 @@
 import os
 import sys
 
+import mlflow
 import pandas as pd
 
 from student_performance_indicator.components.model_evaluator import ModelEvaluator
@@ -11,6 +12,12 @@ from student_performance_indicator.exception.exception import (
 )
 from student_performance_indicator.logger.logger import logger
 from student_performance_indicator.utils.main_utils.utils import get_latest_artifact_dir
+
+if os.getenv("RUNNING_IN_DOCKER") == "1":
+    mlflow.set_tracking_uri("http://mlflow:5000")  # inside container
+else:
+    mlflow.set_tracking_uri("http://localhost:5001")  # running locally
+mlflow.set_experiment("StudentPerformance")
 
 
 class ModelEvaluationPipeline:

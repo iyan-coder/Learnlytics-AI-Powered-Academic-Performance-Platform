@@ -3,6 +3,7 @@ import datetime as dt
 import os  # Helps with file and folder paths
 import pathlib
 import sys  # Helps handle system-level errors
+
 import joblib  # Used to load or save trained models
 import mlflow  # Used to track model experiments
 import mlflow.sklearn  # Helps log sklearn models to MLflow
@@ -34,14 +35,17 @@ from student_performance_indicator.utils.ml_utils.model.model_factory import (
     load_model_config,
 )  # Loads which ML models and parameters we want to try
 
-import os
-
 if os.getenv("RUNNING_IN_DOCKER") == "1":
-    mlflow.set_tracking_uri("http://mlflow:5000")  # ✅ Docker container name + internal port
+    mlflow.set_tracking_uri(
+        "http://mlflow:5000"
+    )  #  Docker container name + internal port
 else:
-    mlflow.set_tracking_uri("http://localhost:5001")  # ✅ When running locally outside Docker
-  # Inside Docker (client) talking to host
+    mlflow.set_tracking_uri(
+        "http://localhost:5001"
+    )  # When running locally outside Docker
+# Inside Docker (client) talking to host
 mlflow.set_experiment("StudentPerformance")
+
 
 class ModelEvaluator:
     """
@@ -93,41 +97,44 @@ class ModelEvaluator:
             y_sample: Example target values
         """
 
-        mlflow.set_tag("stage", stage)  # e.g., train or test
-        mlflow.set_tag("model_name", model_name)
-        mlflow.log_param("model_name", model_name)
+        # ---------- start the run ----------
+        with mlflow.start_run(run_name=f"{model_name}-{stage}"):
 
-        # Dictionary of metrics to log
-        metrics_to_log = {
-            "r2": metric.r2_score,
-            "rmse": metric.root_mean_squared_error,
-            "mae": metric.mean_absolute_error,
-        }
+            mlflow.set_tag("stage", stage)  # e.g., train or test
+            mlflow.set_tag("model_name", model_name)
+            mlflow.log_param("model_name", model_name)
 
-        # Remove any None values (e.g., roc_auc for multiclass)
-        safe_metrics = {k: v for k, v in metrics_to_log.items() if v is not None}
+            # Dictionary of metrics to log
+            metrics_to_log = {
+                "r2": metric.r2_score,
+                "rmse": metric.root_mean_squared_error,
+                "mae": metric.mean_absolute_error,
+            }
 
-        # Log each metric with stage prefix (e.g., train_accuracy)
-        mlflow.log_metrics({f"{stage}_{k}": v for k, v in safe_metrics.items()})
+            # Remove any None values (e.g., roc_auc for multiclass)
+            safe_metrics = {k: v for k, v in metrics_to_log.items() if v is not None}
 
-        # Save model locally
-        path = pathlib.Path("saved_models")
-        path.mkdir(exist_ok=True, parents=True)
-        timestamp = dt.datetime.now().strftime("%Y%m%dT%H%M")
-        filename = path / f"{model_name}_{stage}_{timestamp}.pkl"
-        joblib.dump(model, filename)
-        mlflow.log_param(f"{stage}_model_path", str(filename))
+            # Log each metric with stage prefix (e.g., train_accuracy)
+            mlflow.log_metrics({f"{stage}_{k}": v for k, v in safe_metrics.items()})
 
-        # # Infer model signature (input/output schema)
-        # signature = infer_signature(X_sample, model.predict(X_sample))
+            # Save model locally
+            path = pathlib.Path("saved_models")
+            path.mkdir(exist_ok=True, parents=True)
+            timestamp = dt.datetime.now().strftime("%Y%m%dT%H%M")
+            filename = path / f"{model_name}_{stage}_{timestamp}.pkl"
+            joblib.dump(model, filename)
+            mlflow.log_param(f"{stage}_model_path", str(filename))
 
-        # log_model (disabled to avoid DAGsHub error)
-        # mlflow.sklearn.log_model(
-        #     sk_model=model,
-        #     artifact_path=f"{model_name}_{stage}_model",
-        #     input_example=pd.DataFrame(X_sample),
-        #     signature=signature
-        # )
+            # # Infer model signature (input/output schema)
+            # signature = infer_signature(X_sample, model.predict(X_sample))
+
+            # log_model (disabled to avoid DAGsHub error)
+            # mlflow.sklearn.log_model(
+            #     sk_model=model,
+            #     artifact_path=f"{model_name}_{stage}_model",
+            #     input_example=pd.DataFrame(X_sample),
+            #     signature=signature
+            # )
 
     def evaluate(self, X_train, y_train, X_test, y_test):
         """

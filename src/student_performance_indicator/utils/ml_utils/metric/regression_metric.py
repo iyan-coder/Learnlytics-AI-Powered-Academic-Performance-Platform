@@ -2,11 +2,8 @@
 import os
 import sys
 
-from sklearn.metrics import (
-    mean_absolute_error,  # Sklearn regression metrics
-    mean_squared_error,
-    r2_score,
-)
+from sklearn.metrics import mean_absolute_error  # Sklearn regression metrics
+from sklearn.metrics import mean_squared_error, r2_score
 
 from student_performance_indicator.entity.artifact_entity import (
     RegressionMetricArtifact,

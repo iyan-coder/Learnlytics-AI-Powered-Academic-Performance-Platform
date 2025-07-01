@@ -4,10 +4,10 @@ import sys  # Helps with system-specific error messages
 
 import numpy as np  # Helpful for working with numbers
 import pandas as pd  # To load and work with data tables (DataFrames)
-from scipy.stats import (
+from scipy.stats import (  # Used for checking if two sets of numbers are similar (drift check)
+    chi2_contingency,
     ks_2samp,
-)  # Used for checking if two sets of numbers are similar (drift check)
-from scipy.stats import chi2_contingency
+)
 
 from student_performance_indicator.constant.training_pipeline import SCHEMA_FILE_PATH
 from student_performance_indicator.entity.artifact_entity import (

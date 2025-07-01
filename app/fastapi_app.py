@@ -2,17 +2,17 @@ import os
 import sys
 
 import certifi
+import mlflow
 import pandas as pd
 import pymongo
 import uvicorn
-import mlflow
 from dotenv import load_dotenv
 from fastapi import FastAPI, File, Request, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse, RedirectResponse
+from fastapi.templating import Jinja2Templates
 from starlette.responses import RedirectResponse
 from uvicorn import run as app_run
-from fastapi.templating import Jinja2Templates
 
 from student_performance_indicator.constant.training_pipeline import (
     DATA_INGESTION_COLLECTION_NAME,
@@ -40,10 +40,14 @@ load_dotenv()
 import os
 
 if os.getenv("RUNNING_IN_DOCKER") == "1":
-    mlflow.set_tracking_uri("http://mlflow:5000")  # ✅ Docker container name + internal port
+    mlflow.set_tracking_uri(
+        "http://mlflow:5000"
+    )  # ✅ Docker container name + internal port
 else:
-    mlflow.set_tracking_uri("http://localhost:5001")  # ✅ When running locally outside Docker
- 
+    mlflow.set_tracking_uri(
+        "http://localhost:5001"
+    )  # ✅ When running locally outside Docker
+
 mlflow.set_experiment("StudentPerformance")
 
 # === MongoDB setup ===
@@ -66,6 +70,7 @@ app.add_middleware(
 )
 
 templates = Jinja2Templates(directory="templates")
+
 
 # === Routes ===
 @app.get("/", tags=["authentication"])
@@ -132,5 +137,3 @@ async def predict_route(request: Request, file: UploadFile = File(...)):
     except Exception as e:
         logger.error("Model prediction failed", exc_info=True)
         raise StudentPerformanceException(e, sys)
-
-
