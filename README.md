@@ -1,7 +1,6 @@
 # 🎓 Learnlytics – AI-Powered Academic Performance Platform
 
 [![Python](https://img.shields.io/badge/python-3.11-blue.svg)](https://www.python.org)
-
 [![Docker Ready](https://img.shields.io/badge/docker-publish-green)](https://hub.docker.com/)
 [![MLflow Tracking](https://img.shields.io/badge/MLflow-active-orange)](https://mlflow.org)
 [![scikit-learn](https://img.shields.io/badge/scikit--learn-1.5.0-red)](https://scikit-learn.org/stable/)
@@ -48,15 +47,18 @@ By combining **EDA insights, explainability (SHAP), and deployment-ready APIs (S
 
 ## 🧠 End-to-End Pipeline
 
+### 🧠 Learnlytics Pipeline Flow
+
 ```mermaid
 flowchart TD
     A[Raw Data] --> B[Data Validation]
     B --> C[Data Transformation]
-    C --> D[Model Training & Hyperparameter Tuning]
-    D --> E[Evaluation (R², MAE, RMSE)]
-    E --> F[Model Registry & Pushing]
+    C --> D[Model Training and Hyperparameter Tuning]
+    D --> E[Evaluation: R2 / MAE / RMSE]
+    E --> F[Model Registry and Pushing]
     F --> G[Deployment: Streamlit, Flask, FastAPI]
-    G --> H[Monitoring & CI/CD (MLflow + GitHub Actions)]
+    G --> H[Monitoring and CI/CD]
+
 ```
 
 ## 🚀 Why It Matters
