@@ -19,7 +19,7 @@ Traditional evaluation often misses these socio-economic and behavioral signals,
 
 ## ✅ Solution
 Learnlytics uses **Machine Learning regression pipelines** to predict student math scores from socio-economic, demographic, and academic-behavioral features.  
-By combining **EDA insights, explainability (SHAP), and deployment-ready APIs (Streamlit, Flask, FastAPI)**, the system helps educators:
+By combining **EDA insights, and deployment-ready APIs (Streamlit, Flask, FastAPI)**, the system helps educators:
 
 - Identify at-risk students early.  
 - Provide data-driven personalized support.  
@@ -74,7 +74,7 @@ flowchart TD
 ## 📊 Exploratory Data Analysis (EDA) Insights
 
 - **Target Distribution (Math Scores):** Checked spread of student scores → revealed skewness & performance clusters.  
-- **Correlation Heatmap:** Found strong correlation between parental education, lunch type, and test prep with math scores.  
+- **Correlation :** Found strong correlation between parental education, lunch type, and test prep with math scores.  
 - **Feature Impact:**  
   - Students with higher parental education → consistently scored better.  
   - Lunch type (standard vs. free/reduced) showed performance gaps.  
