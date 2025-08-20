@@ -9,7 +9,7 @@
 [![Flask](https://img.shields.io/badge/Flask-3.0-lightgrey)](https://flask.palletsprojects.com)
 [![DVC](https://img.shields.io/badge/DVC-3.50-purple)](https://dvc.org)
 [![GitHub Actions](https://img.shields.io/badge/GitHub_Actions-CI%2FCD-blue)](https://github.com/features/actions)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
 
 
 
@@ -91,7 +91,7 @@ learnlytics/
 │   ├─ flask_app/                ← Flask batch API
 │   ├─ fastapi_app/              ← FastAPI async API
 │   └─ templates/, static/
-├─ src/learnlytics/
+├─ src/students_indicator_performance/
 │   ├─ components/               ← ingestion, validation, transformation
 │   ├─ pipeline/                 ← train & predict pipelines
 │   ├─ utils/, logger.py, exception.py
@@ -158,3 +158,16 @@ jobs:
 2. All parameters, metrics, models and artifacts logged automatically
 
 3. Switch to a remote MLflow backend by editing docker-compose.yaml
+
+
+ ---
+ ## 👤 Author
+**Adebayo Gabriel** – ML Engineer (**AI × Learnlytics **)  
+
+## 🔗 Links 
+📧 iyanuoluwaadebayo04@gmail.com | 🌐 [LinkedIn](https://www.linkedin.com/in/gabriel-adebayo-2a0ba2281) | [GitHub](https://github.com/iyan-coder)  
+
+---
+
+⚡ *This is more than a model—it's a production-minded AI system for real-world education sights.*
+
