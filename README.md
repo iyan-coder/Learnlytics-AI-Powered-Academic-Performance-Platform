@@ -1,7 +1,7 @@
 # 🎓 Learnlytics – AI-Powered Academic Performance Platform
 
 [![Python](https://img.shields.io/badge/python-3.11-blue.svg)](https://www.python.org)
-[![Build Status](https://github.com/iyan-coder/Learnlytics/actions/workflows/ci.yml/badge.svg)](https://github.com/iyan-coder/Learnlytics/actions)
+
 [![Docker Ready](https://img.shields.io/badge/docker-publish-green)](https://hub.docker.com/)
 [![MLflow Tracking](https://img.shields.io/badge/MLflow-active-orange)](https://mlflow.org)
 [![scikit-learn](https://img.shields.io/badge/scikit--learn-1.5.0-red)](https://scikit-learn.org/stable/)
@@ -12,8 +12,22 @@
 [![GitHub Actions](https://img.shields.io/badge/GitHub_Actions-CI%2FCD-blue)](https://github.com/features/actions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-> **Predict a student’s _math score_ from socio-economic, demographic and academic-behavioural features.**  
-> End-to-end regression pipeline with **MLflow**, **DVC/Dagshub**, multi-flavour deployment (**Streamlit, Flask, FastAPI**) – all **Dockerized** with **GitHub Actions CI/CD**.
+
+
+## 🚨 Problem
+Students’ academic performance is influenced by multiple factors such as parental education, lunch type, and preparation habits.  
+Traditional evaluation often misses these socio-economic and behavioral signals, leading to **ineffective interventions** and **missed opportunities for support**.
+
+## ✅ Solution
+Learnlytics uses **Machine Learning regression pipelines** to predict student math scores from socio-economic, demographic, and academic-behavioral features.  
+By combining **EDA insights, explainability (SHAP), and deployment-ready APIs (Streamlit, Flask, FastAPI)**, the system helps educators:
+
+- Identify at-risk students early.  
+- Provide data-driven personalized support.  
+- Improve academic outcomes at scale.  
+
+🚀 Designed for **real-world educational impact**, not just academic demos.
+
 
 ---
 
@@ -28,21 +42,21 @@
 | **Versioning**  | DVC + DagsHub (datasets & artifacts)                                            |
 | **Serving**     | Streamlit UI • Flask API • FastAPI API                                          |
 | **Automation**  | GitHub Actions CI/CD – build, test, (optionally) deploy                         |
-| **Author**      | _Gabriel Adebayo_ – Mechatronics student, inspired by Krish Naik’s series       |
+| **Author**      | _Gabriel Adebayo_ – Mechatronics student       |
 
 ---
 
 ## 🧠 End-to-End Pipeline
 
 ```mermaid
-graph TD
+flowchart TD
     A[Raw Data] --> B[Data Validation]
     B --> C[Data Transformation]
-    C --> D[Model Training + Hyperparameter Tuning]
+    C --> D[Model Training & Hyperparameter Tuning]
     D --> E[Evaluation (R², MAE, RMSE)]
-    E --> F[Model Registry + Pushing]
-    F --> G[Streamlit • Flask • FastAPI Deployment]
-    G --> H[Monitoring with MLflow + CI/CD]
+    E --> F[Model Registry & Pushing]
+    F --> G[Deployment: Streamlit, Flask, FastAPI]
+    G --> H[Monitoring & CI/CD (MLflow + GitHub Actions)]
 ```
 
 ## 🚀 Why It Matters
