@@ -25,7 +25,8 @@ from student_performance_indicator.pipeline.prediction_pipeline import (
 # PAGE CONFIG – favicon, title, and wide layout
 # ──────────────────────────────────────────────────────────────────────────────
 st.set_page_config(
-    page_title="Student Performance – Math Score Predictor",
+    page_title="Learnlytics-AI-Powered-Academic-Performance-Platform
+",
     page_icon="📊",
     layout="wide",
 )
@@ -34,7 +35,7 @@ st.set_page_config(
 # SIDEBAR – project info & quick links
 # ──────────────────────────────────────────────────────────────────────────────
 with st.sidebar:
-    st.title("📚 Student Performance")
+    st.title("📚Learnlytics-AI-Powered-Academic-Performance-Platform")
     st.markdown(
         """
         **Model:** LinearRegression
